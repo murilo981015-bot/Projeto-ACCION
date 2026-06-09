@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema | Orçamento</title>
+    <link rel="stylesheet" href="CSS/global.css">
+    <link rel="stylesheet" href="CSS/orcamento.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="sistema-container">
+        <!-- Menu Lateral Fixo -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h1>SCP</h1>
+                <p>Sistema</p>
+            </div>
+
+            <nav class="menu">
+                <a href="cliente.html" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Cadastro de Cliente</span>
+                </a>
+                <a href="categoriaProd.html" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span>Cadastro de Categoria</span>
+                </a>
+                <a href="produto.html" class="menu-item">
+                    <i class="fas fa-box"></i>
+                    <span>Cadastro de Produtos</span>
+                </a>
+                <a href="orcamento.html" class="menu-item active">
+                    <i class="fas fa-calculator"></i>
+                    <span>Orçamento</span>
+                </a>
+                <a href="login.html" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <h1><i class="fas fa-calculator"></i> Orçamento</h1>
+                    <p>O orçamento reúne cliente, datas e itens de produtos</p>
+                </div>
+
+                <div class="card-body">
+                    <!-- Formulário de Orçamento -->
+                    <div class="form-area">
+                        <h2><i class="fas fa-file-invoice"></i> Dados do Orçamento</h2>
+                        <form id="formOrcamento">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-barcode"></i> Código do Orçamento</label>
+                                    <input type="text" id="codigo" class="form-control" readonly placeholder="Gerado automaticamente" style="background:#f5f5f5;">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Cliente *</label>
+                                    <select id="clienteId" class="form-control">
+                                        <option value="">Selecione um cliente</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-alt"></i> Data do Orçamento *</label>
+                                    <input type="date" id="dataOrcamento" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-check"></i> Data de Validade *</label>
+                                    <input type="date" id="dataValidade" class="form-control">
+                                </div>
+                            </div>
+
+                            <h3><i class="fas fa-boxes"></i> Itens do Orçamento</h3>
+                            <div id="itensContainer">
+                                <div class="item-produto">
+                                    <div class="form-row">
+                                        <div class="form-group" style="flex: 2;">
+                                            <label>Produto</label>
+                                            <select class="produto-select form-control" onchange="calcularItem(this)">
+                                                <option value="">Selecione um produto</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" style="flex: 2;">
+                                            <label>Descrição</label>
+                                            <input type="text" class="descricao-produto form-control" readonly style="background:#f5f5f5;">
+                                        </div>
+                                        <div class="form-group" style="flex: 1;">
+                                            <label>Quantidade</label>
+                                            <input type="number" class="quantidade form-control" value="1" min="1" onchange="calcularItem(this)">
+                                        </div>
+                                        <div class="form-group" style="flex: 1;">
+                                            <label>Valor Unitário</label>
+                                            <input type="text" class="valor-unitario form-control" readonly style="background:#f5f5f5;">
+                                        </div>
+                                        <div class="form-group" style="flex: 1;">
+                                            <label>Valor Total</label>
+                                            <input type="text" class="valor-total-item form-control" readonly style="background:#f5f5f5;">
+                                        </div>
+                                        <div class="form-group" style="flex: 0.3;">
+                                            <label>&nbsp;</label>
+                                            <button type="button" class="btn-remove btn-danger" onclick="removerItem(this)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-secondary" onclick="adicionarItem()">
+                                <i class="fas fa-plus"></i> Adicionar Produto
+                            </button>
+
+                            <div class="orcamento-total">
+                                <strong>Valor Total do Orçamento: R$ <span id="totalOrcamento">0,00</span></strong>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary" onclick="limparFormulario()">
+                                    <i class="fas fa-eraser"></i> Limpar
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Salvar Orçamento
+                                </button>
+                                <button type="button" class="btn btn-success" onclick="imprimirOrcamento()">
+                                    <i class="fas fa-print"></i> Imprimir
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Lista de Orçamentos -->
+                    <div class="table-area">
+                        <h2><i class="fas fa-list"></i> Orçamentos Salvos</h2>
+                        <div class="search-box">
+                            <input type="text" id="busca" placeholder="🔍 Buscar orçamento por código ou cliente..." onkeyup="buscarOrcamentos()">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Cliente</th>
+                                        <th>Data</th>
+                                        <th>Validade</th>
+                                        <th>Total</th>
+                                        <th width="120">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listaOrcamentos">
+                                    <tr><td colspan="6" style="text-align: center;">Carregando...</td</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar exclusão</h3>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este orçamento?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmarExcluir">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização/Impressão -->
+    <div id="modalVisualizar" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3>Visualizar Orçamento</h3>
+                <span class="close" onclick="fecharModalVisualizar()">&times;</span>
+            </div>
+            <div class="modal-body" id="visualizarConteudo">
+                <!-- Conteúdo do orçamento será inserido aqui -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="fecharModalVisualizar()">Fechar</button>
+                <button class="btn btn-primary" onclick="imprimirModal()">Imprimir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensagem -->
+    <div id="mensagem" class="mensagem"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</body>
+</html>

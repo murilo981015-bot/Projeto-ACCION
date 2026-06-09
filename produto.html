@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema | Cadastro de Produtos</title>
+    <link rel="stylesheet" href="CSS/global.css">
+    <link rel="stylesheet" href="CSS/produto.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="sistema-container">
+        <!-- Menu Lateral Fixo -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h1>SCP</h1>
+                <p>Sistema</p>
+            </div>
+
+            <nav class="menu">
+                <a href="cliente.html" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Cadastro de Cliente</span>
+                </a>
+                <a href="categoriaProd.html" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span>Cadastro de Categoria</span>
+                </a>
+                <a href="produto.html" class="menu-item active">
+                    <i class="fas fa-box"></i>
+                    <span>Cadastro de Produtos</span>
+                </a>
+                <a href="orcamento.html" class="menu-item">
+                    <i class="fas fa-calculator"></i>
+                    <span>Orçamento</span>
+                </a>
+                <a href="login.html" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <h1><i class="fas fa-box"></i> Cadastro de Produtos</h1>
+                    <p>Produtos precisam estar vinculados a uma categoria</p>
+                </div>
+
+                <div class="card-body">
+                    <!-- Formulário de Cadastro -->
+                    <div class="form-area">
+                        <h2><i class="fas fa-plus-circle"></i> Dados do Produto</h2>
+                        <form id="formProduto">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-barcode"></i> Código do Produto</label>
+                                    <input type="text" id="codigo" class="form-control" readonly placeholder="Gerado automaticamente" style="background:#f5f5f5;">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-layer-group"></i> Categoria do Produto *</label>
+                                    <select id="categoriaId" class="form-control">
+                                        <option value="">Selecione uma categoria</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-align-left"></i> Descrição *</label>
+                                    <input type="text" id="descricao" class="form-control" placeholder="Digite a descrição do produto">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-comment"></i> Observação</label>
+                                    <textarea id="observacao" class="form-control" rows="3" placeholder="Digite observações sobre o produto"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-dollar-sign"></i> Valor de Venda *</label>
+                                    <input type="text" id="valorVenda" class="form-control" placeholder="R$ 0,00">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-alt"></i> Data de Cadastro</label>
+                                    <input type="date" id="dataCadastro" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-toggle-on"></i> Status *</label>
+                                    <select id="status" class="form-control">
+                                        <option value="ativo">Ativo</option>
+                                        <option value="inativo">Inativo</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="produtoId">
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary" onclick="limparFormulario()">
+                                    <i class="fas fa-eraser"></i> Limpar
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Salvar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Lista de Produtos -->
+                    <div class="table-area">
+                        <h2><i class="fas fa-list"></i> Lista de Produtos</h2>
+                        <div class="search-box">
+                            <input type="text" id="busca" placeholder="🔍 Buscar produto por código, descrição ou categoria..." onkeyup="buscarProdutos()">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Categoria</th>
+                                        <th>Descrição</th>
+                                        <th>Valor Venda</th>
+                                        <th>Data Cadastro</th>
+                                        <th>Status</th>
+                                        <th width="100">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listaProdutos">
+                                    <tr><td colspan="7" style="text-align: center;">Carregando...</td</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar exclusão</h3>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este produto?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmarExcluir">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensagem -->
+    <div id="mensagem" class="mensagem"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+</html>
